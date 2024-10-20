@@ -2,6 +2,10 @@
 
 Este proyecto es una aplicación completa que permite decodificar imágenes a partir de cadenas base64 usando ReactJS para el frontend y NestJS para el backend. La aplicación también permite redimensionar, comprimir y convertir imágenes a formato JPG, y proporciona una vista previa y descarga automática de la imagen procesada.
 
+# Actualización
+
+Ahora la aplicación permite convertir html a un documento de .doc, donde identifica las imágenes en diferentes formatos pero en especial las de base64, además tiene la opción de hacer limpieza de código para que el desarrollo las detecte de forma correcta y sean procesadas, para esta nueva herramienta, tambien se vinculan las opciones de redimensionar, comprimir y convertir imágenes a formato JPG.
+
 ## Tecnologías Utilizadas
 
 - **Frontend**: ReactJS
