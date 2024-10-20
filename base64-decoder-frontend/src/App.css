@@ -28,6 +28,17 @@ h1 {
   max-width: 80%;
 }
 
+.tool-selection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tool-selection label {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
 .form {
   display: flex;
   flex-direction: column;
