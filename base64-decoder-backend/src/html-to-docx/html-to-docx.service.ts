@@ -29,6 +29,14 @@ export class HtmlToDocxService {
     return cleanedHtml;
   }
 
+  cleanAspectRatios(html: string): { cleanedHtml: string, count: number } {
+    const aspectRatioRegex = /style="aspect-ratio:[^;]+;?[^"]*"/gi;
+    const matches = html.match(aspectRatioRegex) || [];
+    const cleanedHtml = html.replace(aspectRatioRegex, '');
+    this.logger.log(`Removed ${matches.length} aspect-ratio styles`);
+    return { cleanedHtml, count: matches.length };
+  }
+
   async processBase64Images(html: string, options: { resize: boolean, resizeValue: number, compress: boolean, convertToJpg: boolean }): Promise<string> {
     const base64ImageRegex = /<img\s+src=["']data:image\/(png|jpeg|jpg);base64,([^"']+)["']/gi;
     let match;
@@ -54,6 +62,41 @@ export class HtmlToDocxService {
     return updatedHtml;
   }
 
+  // async processImage(format: string, base64: string, options: { resize: boolean, resizeValue: number, compress: boolean, convertToJpg: boolean }): Promise<string> {
+  //   try {
+  //     if (!base64) {
+  //       throw new Error('Base64 string is undefined');
+  //     }
+
+  //     let buffer = Buffer.from(base64, 'base64');
+  //     let image = sharp(buffer);
+
+  //     if (options.resize) {
+  //       const percentage = options.resizeValue / 100;
+  //       const metadata = await image.metadata();
+  //       image = image.resize({
+  //         width: Math.round(metadata.width * percentage),
+  //         height: Math.round(metadata.height * percentage)
+  //       });
+  //     }
+
+  //     if (options.compress) {
+  //       image = image.jpeg({ quality: 50 });
+  //     }
+
+  //     if (options.convertToJpg) {
+  //       image = image.toFormat('jpeg');
+  //       format = 'jpeg';
+  //     }
+
+  //     const outputBuffer = await image.toBuffer();
+  //     const updatedBase64 = outputBuffer.toString('base64');
+  //     return `data:image/${format};base64,${updatedBase64}`;
+  //   } catch (error) {
+  //     this.logger.error('Error processing image', error);
+  //     throw new Error('Error processing image');
+  //   }
+  // }
   async processImage(format: string, base64: string, options: { resize: boolean, resizeValue: number, compress: boolean, convertToJpg: boolean }): Promise<string> {
     try {
       if (!base64) {
@@ -72,13 +115,14 @@ export class HtmlToDocxService {
         });
       }
 
-      if (options.compress) {
-        image = image.jpeg({ quality: 50 });
+      if (options.convertToJpg) {
+        // Agregar fondo blanco para imágenes transparentes antes de convertir a JPG
+        image = image.flatten({ background: { r: 255, g: 255, b: 255 } }).toFormat('jpeg');
+        format = 'jpeg';
       }
 
-      if (options.convertToJpg) {
-        image = image.toFormat('jpeg');
-        format = 'jpeg';
+      if (options.compress) {
+        image = image.jpeg({ quality: 50 });
       }
 
       const outputBuffer = await image.toBuffer();
@@ -89,4 +133,9 @@ export class HtmlToDocxService {
       throw new Error('Error processing image');
     }
   }
+
+
+
 }
+
+
