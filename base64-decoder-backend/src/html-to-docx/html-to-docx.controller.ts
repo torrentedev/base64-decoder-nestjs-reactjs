@@ -25,4 +25,16 @@ export class HtmlToDocxController {
       res.status(500).send('Error converting HTML to DOCX');
     }
   }
+
+  @Post('clean-aspect-ratio')
+  async cleanAspectRatio(@Body('html') html: string, @Res() res: Response): Promise<void> {
+    try {
+      const { cleanedHtml, count } = this.htmlToDocxService.cleanAspectRatios(html);
+      res.json({ cleanedHtml, count });
+    } catch (error) {
+      this.logger.error('Error cleaning aspect-ratio', error);
+      res.status(500).send('Error cleaning aspect-ratio');
+    }
+  }
+
 }
