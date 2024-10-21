@@ -228,11 +228,22 @@ function App() {
   const [htmlString, setHtmlString] = useState('');
   const [base64ImageCount, setBase64ImageCount] = useState(0);
   const [tool, setTool] = useState('base64');
+  
 
   const handleHtmlChange = (e) => {
     const html = e.target.value;
     setHtmlString(html);
     updateBase64ImageCount(html);
+  };
+
+  const handleCleanAspectRatio = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/html-to-docx/clean-aspect-ratio', { html: htmlString });
+      setHtmlString(response.data.cleanedHtml);
+      toast.success(`Se eliminaron ${response.data.count} variaciones de aspect-ratio`);
+    } catch (error) {
+      toast.error('Error al limpiar aspect-ratio');
+    }
   };
 
   const updateBase64ImageCount = (html) => {
@@ -407,6 +418,7 @@ function App() {
           <p>Cantidad de imágenes base64 detectadas: {base64ImageCount}</p>
           <button type="submit" className="button">Convertir HTML a DOCX</button>
           <button type="button" className="button" onClick={handleCleanBase64Html}>Limpiar código base64</button>
+          <button type="button" className="button" onClick={handleCleanAspectRatio}>Limpiar aspect-ratio</button>
           <button type="button" className="button" onClick={handleNewDecoding}>Nueva Conversión</button>
         </form>
       )}
